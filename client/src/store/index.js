@@ -116,7 +116,7 @@ export const useGlobalStore = () => {
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playist;
+                let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
@@ -142,6 +142,34 @@ export const useGlobalStore = () => {
         }
         asyncChangeListName(id);
     }
+
+    //shreyas trying to add new list 
+    store.createNewList = function(){
+        console.log("entered createNewList");
+        async function asyncCreateNewList(){
+            console.log("entered async createNewList");
+            let newList ={
+                "name": "Untitled",
+                "songs": []
+            };
+        
+        const response = await api.createPlaylist(newList);
+        if(response.data.success){
+            //if response successfully comes thru
+            let newPlaylist1 = response.data.playlist; //will plug this new playlist into 
+            storeReducer({
+               type: GlobalStoreActionType.CREATE_NEW_LIST, payload:newPlaylist1 
+            });
+            store.history.push("/playlist/" + newPlaylist1._id);
+
+        }
+        }
+        asyncCreateNewList(); //cretas newlist
+        
+    }
+
+
+    //shreyas edits, after this its mckenna
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
