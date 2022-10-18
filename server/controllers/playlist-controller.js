@@ -6,14 +6,42 @@ const Playlist = require('../models/playlist-model')
     
     @author McKilla Gorilla
 */
+
+//shreyas edits for changing playlist name//
+
+updatePlaylistById = async(req,res) => {
+    const body = req.body;
+    console.log("Entered update playlist by id");
+    console.log("updatePlaylistById: " + body);
+    if(!body){
+        return res.status(400).json({
+
+            success: false, 
+            error: 'No body to update'
+        })
+    }
+    Playlist.findOne({_id:req.params.id},(err,playlist)=>{
+        if(err){
+            return res.
+        }
+    }
+}
+
+
+
+
+
+//shreyas edits end-----
+
 createPlaylist = (req, res) => {
+    console.log("Shreyas Test Create Playlist") ;
     const body = req.body;
     console.log("createPlaylist body: " + body);
 
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: 'You must provide a Playlist',
+            error: 'You should provide a playlist',
         })
     }
 
@@ -91,5 +119,6 @@ module.exports = {
     createPlaylist,
     getPlaylists,
     getPlaylistPairs,
-    getPlaylistById
+    getPlaylistById,
+    updatePlaylistById
 }

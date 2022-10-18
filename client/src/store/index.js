@@ -112,6 +112,7 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = function (id, newName) {
+        console.log("entered the store index.js changeListName");
         // GET THE LIST
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
@@ -119,6 +120,7 @@ export const useGlobalStore = () => {
                 let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
+                    //errors on this response
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
                         async function getListPairs(playlist) {
@@ -143,19 +145,23 @@ export const useGlobalStore = () => {
         asyncChangeListName(id);
     }
 
+
+
+
     //shreyas trying to add new list 
     store.createNewList = function(){
         console.log("entered createNewList");
         async function asyncCreateNewList(){
             console.log("entered async createNewList");
-            let newList ={
+            let newList1 ={
                 "name": "Untitled",
                 "songs": []
             };
         
-        const response = await api.createPlaylist(newList);
+        const response = await api.createPlaylist(newList1);
         if(response.data.success){
             //if response successfully comes thru
+            console.log("if response data success store");
             let newPlaylist1 = response.data.playlist; //will plug this new playlist into 
             storeReducer({
                type: GlobalStoreActionType.CREATE_NEW_LIST, payload:newPlaylist1 
@@ -167,9 +173,10 @@ export const useGlobalStore = () => {
         asyncCreateNewList(); //cretas newlist
         
     }
+    //shreyas edits for set list name
 
-
-    //shreyas edits, after this its mckenna
+    //----------shreyas set list name ------------
+    //shreyas edits
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
@@ -225,7 +232,7 @@ export const useGlobalStore = () => {
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
-    store.setlistNameActive = function () {
+    store.setListNameActive = function () {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
