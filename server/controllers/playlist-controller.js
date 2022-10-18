@@ -20,14 +20,50 @@ updatePlaylistById = async(req,res) => {
             error: 'No body to update'
         })
     }
-    Playlist.findOne({_id:req.params.id},(err,playlist)=>{
+    Playlist.findOne({ _id:req.params.id},(err,playlist)=>{
         if(err){
-            return res.
+            console.log("Shreyas  Check find One")
+            return res.status(400).json({success: false, error:err});
+
         }
-    }
+        playlist.name =body.name;
+        playlist.songs=body.songs;
+        
+
+        //
+        playlist
+            .save()
+            .then ( () =>{
+                return res.status(201).json({
+                    success: true,
+                    playlist: playlist,
+
+                    message:'Playlist is Updated Now'
+                })
+            })
+            .catch (error =>{
+                return res.status(400).json({
+                    error,
+                    message: "Playlist was NOT Updated!"
+                })
+            })
+
+    }).catch(err => console.log( err ) ) 
+
 }
 
+deletePlaylistById=async(req,res) => {
+    console.log("Inside delete Playlist By Id, Shreyas");
+    await Playlist.findOneAndDelete({ _id:req.params.id},(err)=>{
+        if(err){
+            return res.status(400).json(
+                {success: false, error:err}
+            )
 
+        }
+        return res.status(200).json({success:true , playlist:list}) //works properly, so return 200 OK
+    }).catch(err=>console.log(err))    
+}
 
 
 
@@ -120,5 +156,6 @@ module.exports = {
     getPlaylists,
     getPlaylistPairs,
     getPlaylistById,
-    updatePlaylistById
+    updatePlaylistById,
+    deletePlaylistById
 }
