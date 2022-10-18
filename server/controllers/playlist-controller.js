@@ -61,7 +61,7 @@ deletePlaylistById=async(req,res) => {
             )
 
         }
-        return res.status(200).json({success:true , playlist:list}) //works properly, so return 200 OK
+        return res.status(200).json({success:true }) //works properly, so return 200 OK
     }).catch(err=>console.log(err))    
 }
 

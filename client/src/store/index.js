@@ -1,6 +1,7 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
+
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -81,7 +82,9 @@ export const useGlobalStore = () => {
                     idNamePairs: store.idNamePairs,
                     currentList: null,
                     newListCounter: store.newListCounter,
-                    listNameActive: false
+                    listNameActive: false,
+                    listMarkedForDeletion: payload
+
                 });
             }
             // UPDATE A LIST
@@ -145,8 +148,46 @@ export const useGlobalStore = () => {
         asyncChangeListName(id);
     }
 
+    //shreyas trying delete list
+    
+    store.markListForDelete = function (id){
+        console.log("entered store mark list for delete");
+        console.log( "id: "+ id);
+        storeReducer({
+            type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
+            payload: id
+        });
+        store.showDeleteListModal();
 
+    }
+    store.showDeleteListModal =function(){
+        let modal=document.getElementById("delete-list-modal");
+        modal.classList.add("is-visible");
+    }
+    store.hideDeleteListModal =function(){
+        let modal=document.getElementById("delete-list-modal");
+        modal.classList.remove("is-visible");
+    }
+    store.deleteMarkedList=function(){
+        console.log("entered deleteMarkedList");
 
+        console.log(store.listMarkedForDeletion.id);
+        store.deleteList(store.listMarkedForDeletion);
+        store.hideDeleteListModal();
+    }
+    store.deleteList = function(id){
+        console.log("entered deleteList");
+        console.log( "id:  "+id);
+        async function deletePro(id){
+            let response = await api.deletePlaylistById(id);
+            if(response.data.success)     {
+                store.loadIdNamePairs();
+                store.history.push("/");
+            }   
+        }
+        deletePro(id);
+    }
+    
 
     //shreyas trying to add new list 
     store.createNewList = function(){
