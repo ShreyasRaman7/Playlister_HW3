@@ -27,6 +27,17 @@ function EditToolbar() {
     if (store.isListNameEditActive) {
         editStatus = true;
     }
+
+    function handleAddSong(){
+        console.log("entered handle add song after clicking button in edit tool bar");
+        let index1 =store.getPlaylistSize(); //getplaylistsize is defined in store index.js 
+        //need to use transaction and use src/common/jsTPS.js
+        //using previous hw2 transaction setup for add and remove songs
+        //so must make a add song transaction
+        store.addSongTransactionHandler(index1);
+
+    }
+
     return (
         <span id="edit-toolbar">
             <input
@@ -35,6 +46,7 @@ function EditToolbar() {
                 disabled={editStatus}
                 value="+"
                 className={enabledButtonClass}
+                onClick={handleAddSong}
             />
             <input
                 type="button"

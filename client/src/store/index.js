@@ -1,6 +1,10 @@
 import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
-import api from '../api'
+import api, { getAllPlaylists } from '../api'
+import AddSong_Transaction from '../transactions/AddSong_Transaction';
+import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction';
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction';
+import EditSong_Transaction from '../transactions/EditSong_Transaction';
 
 export const GlobalStoreContext = createContext({});
 /*
@@ -19,6 +23,7 @@ export const GlobalStoreActionType = {
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    UPDATE_LIST: "UPDATE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -105,6 +110,19 @@ export const useGlobalStore = () => {
                     listNameActive: true
                 });
             }
+
+            // START Updating list, for adding song atm
+            case GlobalStoreActionType.UPDATE_LIST: {
+                console.log("inside UPDATE_LIST case")
+                    return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    listNameActive: true,
+                    //maybe add more later, will look into
+                });
+            }
+
             default:
                 return store;
         }
@@ -218,6 +236,53 @@ export const useGlobalStore = () => {
 
     //----------shreyas set list name ------------
     //shreyas edits
+
+
+
+
+    //tryin to add song shreyas 
+
+    store.addSongTransactionHandler = function(index1){
+        let transaction= new AddSong_Transaction(store,index1); //store,index maybe
+        console.log('Shreyas inside the add song transaction handler within store index.js, sent here from add song transaction, in transactions.')
+        tps.addTransaction(transaction);
+
+    }
+    //now need to add store.addSong
+    
+    store.addSong =function(index1,song1){
+        let song = {
+            title: "Untitled",
+            artist: "Unknown",
+            youTubeId: "dQw4w9WgXcQ"
+        }
+        //it appears my song1 is brutally crashing my code and breaking my nodemon, so i will make the song object here
+        store.currentList.songs.push(song);
+        store.updateMyPlaylist();
+
+    }
+     
+    store.updateMyPlaylist = function(){
+        
+        async function updateMyPlaylist(){
+            console.log("inside shreyas updatemyplaylist");
+            let response = await api.updatePlaylistById(store.currentList._id, store.currentList)
+            console.log("test before response data success check");
+            if (response.data.success){
+                console.log("seeing if response.data.success");
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST, payload: store.currentList
+                })
+            }
+            console.log("seeing if update my playlist works after store reducer")
+        }
+        updateMyPlaylist();
+    }
+
+   
+
+    //
+
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
